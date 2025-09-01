@@ -112,7 +112,9 @@ with fila1_col1:
     label_visibility="collapsed"
 )
 with fila1_col2:
-    st.image("escudo.png", width=50)
+    base_dir = os.path.dirname(__file__)  # carpeta donde está Resultados.py
+    ruta = os.path.join(base_dir, "escudo.png")
+    st.image(ruta, width=50)
 
 # --- Fila 2: texto centrado debajo ---
 
