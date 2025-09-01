@@ -15,13 +15,8 @@ st.markdown("""
         width: 100% !important;
     }
 
-    .main {
-        padding: 0 !important;
-    }
-
-    header, footer {
-        visibility: hidden;
-    }
+    .main { padding: 0 !important; }
+    header, footer { visibility: hidden; }
 
     .boton-app {
         display: block;
@@ -38,57 +33,57 @@ st.markdown("""
         color: #000000 !important;
         text-decoration: none !important;
     }
-
     .boton-app:hover {
         background-color: #e0e0e0;
         transform: scale(1.02);
         cursor: pointer;
     }
-
-    [data-testid="collapsedControl"] {
-        display: none;
-    }
+    [data-testid="collapsedControl"] { display: none; }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Cabecera ---
 col_logo, col_titulo = st.columns([1, 5], gap="small")
-
 with col_logo:
     escudo_path = os.path.join(os.path.dirname(__file__), "escudo.png")
     st.image(escudo_path, width=100)
-
 with col_titulo:
     st.markdown("""
         <div style='display: flex; align-items: center; height: 100px;'>
-            <h1 style='margin: 0 ; margin-left: 6rem; font-size: 3rem;'> Plataforma de Datos del Lamela C.F.</h1>
+            <h1 style='margin: 0 ; margin-left: 6rem; font-size: 3rem;'>
+                Plataforma de Datos del Lamela C.F.
+            </h1>
         </div>
     """, unsafe_allow_html=True)
 
 st.markdown("<p style='text-align: center; color: #555; font-size: 1.2rem;'>Bienvenido. Selecciona una sección para comenzar.</p>", unsafe_allow_html=True)
 
-# --- Botones (sin navegación, todos iguales) ---
+# --- Botones con enlaces ---
 botones = [
-    "⚽ Partidos y Clasificación",
-    "📈 Análisis Equipos",
-    "👤 Análisis Jugadores",
-    "📝 Sanciones Internas",
-    "✅ Control de Asistencia",
-    "📚 Histórico Entrenamientos"
+    ("⚽ Partidos y Clasificación", "https://appdeportivarfgf-koiixs2cjm8eudawlndttg.streamlit.app"),
+    ("📈 Análisis Equipos", "https://appdeportivarfgf-xkb5jj4gfgp9qzsxie7eeu.streamlit.app"),
+    ("👤 Análisis Jugadores", "https://appdeportivarfgf-3b3vav9dstu2r5kaueecoa.streamlit.app"),
+    ("📝 Sanciones Internas", None),
+    ("✅ Control de Asistencia", "https://settings-ba8e6ajwlmljytww6dh8g6.streamlit.app"),
+    ("📚 Histórico Entrenamientos", None)
 ]
 
-# --- Mostrar botones en filas de 3 con separación entre filas ---
+# --- Mostrar botones en filas ---
 for i in range(0, len(botones), 3):
     if i == 3:
-        # Añadir espacio antes de la segunda fila
         st.markdown("<div style='height: 2rem;'></div>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3, gap="large")
-    for col, index in zip([col1, col2, col3], [i, i+1, i+2]):
-        if index < len(botones):
-            with col:
-                st.markdown(f"<div class='boton-app'>{botones[index]}</div>", unsafe_allow_html=True)
-
+    for col, (texto, url) in zip([col1, col2, col3], botones[i:i+3]):
+        with col:
+            if url:
+                st.markdown(
+                    f"<a href='{url}' target='_blank' class='boton-app'>{texto}</a>",
+                    unsafe_allow_html=True
+                )
+            else:
+                if st.button(texto, use_container_width=True, key=texto):
+                    st.warning("🚧 En desarrollo")
 
 # --- Línea divisoria ---
 st.markdown("<hr style='margin-top: 3rem; margin-bottom: 1rem;'>", unsafe_allow_html=True)
