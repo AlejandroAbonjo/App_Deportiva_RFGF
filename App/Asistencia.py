@@ -40,7 +40,7 @@ def kpi_box(label, value):
 # --- Cargar datos ---
 @st.cache_data
 def load_data():
-    df = pd.read_excel("C:/Users/alejandro.abonjo/Documents/RFGF/Extraccion/Control_Asistencia.xlsx")
+    df = pd.read_excel("./Data/Control_Asistencia.xlsx")
     return df
 
 
