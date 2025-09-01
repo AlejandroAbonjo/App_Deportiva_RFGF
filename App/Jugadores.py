@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # --- Estilos globales ---
 st.markdown("""
@@ -22,15 +23,21 @@ st.markdown("""
 # --- Funciones auxiliares ---
 @st.cache_data
 def load_eventos():
-    return pd.read_csv("C:/Users/alejandro.abonjo/Documents/RFGF/Procesamiento/Eventos_partidos.csv")
+    base_dir = os.path.dirname(__file__)
+    ruta = os.path.join(base_dir, "Data", "Eventos_partidos.csv")
+    return pd.read_csv(ruta)
 
 @st.cache_data
 def load_participacion():
-    return pd.read_csv("C:/Users/alejandro.abonjo/Documents/RFGF/Procesamiento/participacion.csv")
+    base_dir = os.path.dirname(__file__)
+    ruta = os.path.join(base_dir, "Data", "participacion.csv")
+    return pd.read_csv(ruta)
 
 @st.cache_data
 def load_resultados():
-    return pd.read_csv("C:/Users/alejandro.abonjo/Documents/RFGF/Procesamiento/resultados_partidos.csv")
+    base_dir = os.path.dirname(__file__)
+    ruta = os.path.join(base_dir, "Data", "resultados_partidos.csv")
+    return pd.read_csv(ruta)
 
 def kpi_box(label, value):
     st.markdown(f"""

@@ -23,17 +23,18 @@ st.markdown("""
 
 
 
-
-
 # --- Funciones auxiliares ---
 @st.cache_data
-def load_data():
-    ruta_csv = "C:\\Users\\alejandro.abonjo\\Documents\\RFGF\\Procesamiento\\resultados_partidos.csv"
-    return pd.read_csv(ruta_csv)
+def load_eventos():
+    base_dir = os.path.dirname(__file__)
+    ruta = os.path.join(base_dir, "Data", "Eventos_partidos.csv")
+    return pd.read_csv(ruta)
 
 @st.cache_data
-def load_eventos():
-    return pd.read_csv("C:\\Users\\alejandro.abonjo\\Documents\\RFGF\\Procesamiento\\Eventos_partidos.csv")
+def load_data():
+    base_dir = os.path.dirname(__file__)
+    ruta = os.path.join(base_dir, "Data", "resultados_partidos.csv")
+    return pd.read_csv(ruta)
 
 def normalizar_equipo(nombre):
     return nombre.upper()\
@@ -72,10 +73,10 @@ def mostrar_eventos_lineas(eventos):
         st.markdown(f"<div style='font-size: 0.75rem; margin-bottom: 2px;'>⏱️ {minuto}' - {desc} <span style='color: #888;'>({equipo})</span></div>", unsafe_allow_html=True)
 
 
-
 def mostrar_escudo(nombre_equipo):
+    base_dir = os.path.dirname(__file__)
     nombre_archivo = normalizar_equipo(nombre_equipo) + ".png"
-    ruta = os.path.join("escudos", nombre_archivo)
+    ruta = os.path.join(base_dir,"Data/Escudos", nombre_archivo)
     if os.path.exists(ruta):
         st.image(ruta, width=40)
     else:
