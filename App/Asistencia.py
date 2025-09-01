@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import os
 
 # --- Configuración inicial ---
 st.set_page_config(page_title="Control de Asistencia", layout="wide")
@@ -40,8 +41,9 @@ def kpi_box(label, value):
 # --- Cargar datos ---
 @st.cache_data
 def load_data():
-    df = pd.read_excel("./Data/Control_Asistencia.xlsx")
-    return df
+    base_dir = os.path.dirname(__file__)   # carpeta donde está Asistencia.py
+    ruta = os.path.join(base_dir, "Data", "Control_Asistencia.xlsx")
+    return pd.read_excel(ruta)
 
 
 df = load_data()
