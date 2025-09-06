@@ -41,9 +41,8 @@ def kpi_box(label, value):
 # --- Cargar datos ---
 @st.cache_data
 def load_data():
-    base_dir = os.path.dirname(__file__)   # carpeta donde está Asistencia.py
-    ruta = os.path.join(base_dir, "Data", "Control_Asistencia.xlsx")
-    return pd.read_excel(ruta)
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBy2T1etnowIRf1l5zP3kXBfs54uKkDlm5pvKdsoyFByi3fYLaNEOLGc1kTJPj6g/pub?gid=1878989803&single=true&output=csv"
+    return pd.read_csv(url)
 
 
 df = load_data()
@@ -51,8 +50,14 @@ df = load_data()
 # --- Configuración inicial ---
 st.set_page_config(page_title="Control de Asistencia", layout="wide")
 
-# --- Título principal ---
-st.title("📊 Control de Asistencia a Entrenamientos")
+# --- Título principal y botón refrescar ---
+col_titulo, col_boton = st.columns([8,1])
+with col_titulo:
+    st.title("📊 Control de Asistencia a Entrenamientos")
+with col_boton:
+    if st.button("🔄 Refrescar"):
+        st.cache_data.clear()
+
 
 
 # --- Transformar datos ---
@@ -107,14 +112,14 @@ fig_jugadores = px.bar(
 
 fig_jugadores.update_layout(
     height=altura,
-    width=800,  # ancho compacto
     margin=dict(l=200, r=50, t=50, b=50),
     xaxis_title="Entrenamientos",
     yaxis_title="",
     yaxis=dict(tickfont=dict(size=10))
 )
 
-st.plotly_chart(fig_jugadores, use_container_width=False)
+st.plotly_chart(fig_jugadores, use_container_width=True)
+
 
 
 
@@ -162,4 +167,55 @@ fig_heatmap.update_layout(
 st.plotly_chart(fig_heatmap, use_container_width=True)
 
 
-st.caption("Desarrollado con ❤️ para el control de asistencia del equipo")
+# --- Evolución individual de asistencia (todos los jugadores) ---
+st.markdown("<br><h4>📈 Evolución acumulada por jugador</h4>", unsafe_allow_html=True)
+
+# Crear DataFrame acumulado por jugador
+df_evolucion = df_asistencia.set_index(df_asistencia.columns[0])[sesiones]
+
+# Calcular acumulado y % por sesión
+evolucion_pct = df_evolucion.cumsum(axis=1).div(range(1, len(sesiones)+1), axis=1) * 100
+
+# Pasar a formato largo para graficar
+df_long = evolucion_pct.reset_index().melt(
+    id_vars=df_asistencia.columns[0],
+    var_name="Sesión",
+    value_name="% Acumulado"
+)
+df_long.rename(columns={df_asistencia.columns[0]: "Jugador"}, inplace=True)
+
+# Gráfico de líneas
+fig_evol = px.line(
+    df_long,
+    x="Sesión", y="% Acumulado",
+    color="Jugador",
+    markers=True,
+    title="Evolución acumulada de asistencia por jugador"
+)
+
+fig_evol.update_layout(
+    yaxis=dict(range=[0, 100]),
+    height=700,
+    margin=dict(l=50, r=30, t=50, b=50)
+)
+
+st.plotly_chart(fig_evol, use_container_width=True)
+
+
+
+col1, col2 = st.columns([3, 1])  # ancho relativo: col1 más grande que col2
+
+with col1:
+    st.caption("Desarrollado  para el control de asistencia del equipo")
+
+with col2:
+    st.markdown(
+        """
+        <div style='text-align:right; font-size:0.85rem; color:#555;'>
+            📂 <a href="https://docs.google.com/spreadsheets/d/1cUcmpeq6Dw32KDCiqmBuw6YlPkBFKt3t/edit?gid=1878989803#gid=1878989803" target="_blank">
+            Abrir hoja en Google Sheets
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )

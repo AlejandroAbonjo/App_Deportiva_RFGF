@@ -87,20 +87,24 @@ df = load_data()
 eventos_df = load_eventos()
 
 # Sidebar de filtros
+temporadas = sorted(df["temporada"].unique())
 competiciones = sorted(df["competicion"].unique())
 grupos = sorted(df["grupo"].unique())
 jornadas = sorted(df["jornada"].unique())
 
+temporada_sel = st.sidebar.selectbox("📆 Temporada", temporadas)
 competicion_sel = st.sidebar.selectbox("🏆 Competición", competiciones)
 grupo_sel = st.sidebar.selectbox("📁 Grupo", grupos)
 jornada_sel = st.sidebar.selectbox("🗓️ Jornada", jornadas)
 
 # Filtrar partidos
 filtros_df = df[
+    (df["temporada"] == temporada_sel) &
     (df["competicion"] == competicion_sel) &
     (df["grupo"] == grupo_sel) &
     (df["jornada"] == jornada_sel)
 ]
+
 
 # --- Fila 1: escudo arriba a la derecha ---
 fila1_col1, fila1_col2 = st.columns([10, 1.75])

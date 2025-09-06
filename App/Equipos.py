@@ -60,12 +60,41 @@ resultados_df = load_resultados()
 
 # --- Sidebar de filtros ---
 st.sidebar.title("Filtros")
-competicion_sel = st.sidebar.selectbox("🏆 Competición", sorted(resultados_df["competicion"].unique()))
-grupo_sel = st.sidebar.selectbox("📁 Grupo", sorted(resultados_df[resultados_df["competicion"] == competicion_sel]["grupo"].unique()))
-equipos_locales = resultados_df[(resultados_df["competicion"] == competicion_sel) & (resultados_df["grupo"] == grupo_sel)]["equipo_local"].unique()
-equipos_visitantes = resultados_df[(resultados_df["competicion"] == competicion_sel) & (resultados_df["grupo"] == grupo_sel)]["equipo_visitante"].unique()
+
+# 1) Temporada
+temporada_sel = st.sidebar.selectbox("📆 Temporada", sorted(resultados_df["temporada"].unique()))
+
+# 2) Competición (filtrada por temporada)
+competicion_sel = st.sidebar.selectbox(
+    "🏆 Competición",
+    sorted(resultados_df[resultados_df["temporada"] == temporada_sel]["competicion"].unique())
+)
+
+# 3) Grupo (filtrado por temporada + competición)
+grupo_sel = st.sidebar.selectbox(
+    "📁 Grupo",
+    sorted(resultados_df[
+        (resultados_df["temporada"] == temporada_sel) &
+        (resultados_df["competicion"] == competicion_sel)
+    ]["grupo"].unique())
+)
+
+# 4) Equipo (filtrado por temporada + competición + grupo)
+equipos_locales = resultados_df[
+    (resultados_df["temporada"] == temporada_sel) &
+    (resultados_df["competicion"] == competicion_sel) &
+    (resultados_df["grupo"] == grupo_sel)
+]["equipo_local"].unique()
+
+equipos_visitantes = resultados_df[
+    (resultados_df["temporada"] == temporada_sel) &
+    (resultados_df["competicion"] == competicion_sel) &
+    (resultados_df["grupo"] == grupo_sel)
+]["equipo_visitante"].unique()
+
 equipos_filtrados = sorted(set(equipos_locales).union(set(equipos_visitantes)))
 equipo_sel = st.sidebar.selectbox("👥 Equipo", equipos_filtrados)
+
 
 # --- Fila 1: escudo arriba a la derecha ---
 fila1_col1, fila1_col2 = st.columns([10, 1.75])
